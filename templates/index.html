@@ -1,0 +1,43 @@
+{% load poll_exstras %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Storage Manager</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css'%}>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script type="text/javascript">
+        $( document ).ready( function() {
+            $( '#results' ).html( '&nbsp;' ).load( '{% url "search" %}?q=');
+            $( '#q' ).keyup( function() {
+                q = $( '#q' ).val();
+                $( '#results' ).html( '&nbsp;' ).load( '{% url "search" %}?q=' + q);
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="">
+        {% include 'navbar.html' %}
+        <div class="container">
+            <div class="row">
+                <div class="col-3"></div>
+                <div class="col-6">
+                    <div class="form-signin">
+                        <h3 class="form-signin-heading center">Search(villas, items)</h3>
+                        <input id="q" type="text" class="form-control" placeholder="Search items here..." />
+                        <br>
+                    </div>
+                </div>
+            </div>
+            <div class="col-3"></div>
+        </div>
+        <div class="margin">
+            <div id="results"></div>
+        </div>
+    </div>
+    {% include 'footer.html' %}
+</body>
+</html>

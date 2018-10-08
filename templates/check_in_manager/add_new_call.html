@@ -1,0 +1,45 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add new source</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css' %}>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+</head>
+
+<body>
+{% include 'check_in_manager/navbar.html' %}
+<div class="container">
+    <div class="row">
+        <div class="col"></div>
+        <div class="col-6" id="main-col">
+            <h1 class="center">Adding call notes</h1>
+            <form method="post" id="form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="source_name">Enter call notes below:</label>
+                    <textarea rows=7 name="notes" class="form-control" id="notes"
+                              aria-describedby="nameHelp" placeholder="Enter Call notes" required></textarea>
+                    <br>
+                    <button type="submit" class="btn btn-dark mt-2 center" id="SubmitButton">Add
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col"></div>
+    </div>
+</div>
+{% include 'footer.html' %}
+<script src={% static 'js/insertAlert.js' %}></script>
+<script>
+    insertAlertSuccess({{ success }}, "You successfully created new item", "main-col");
+</script>
+</body>
+</html>

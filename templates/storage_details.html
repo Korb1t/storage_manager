@@ -1,0 +1,236 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ storage.storage_name }} Deatails</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css' %}>
+    <link rel="stylesheet" href={% static 'css/storage_liststyle.css' %}>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script type="text/javascript">
+        $( document ).ready( function() {
+            $( '#q' ).keyup( function() {
+                q = $( '#q' ).val();
+                $( '#results' ).html( '&nbsp;' ).load( '{% url "search_storages" %}?q=' + q );
+            });
+        });
+    </script>
+
+</head>
+<body>
+{% include 'navbar.html' %}
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+<script src={% static 'js/insertAlert.js' %}></script>
+<script src={% static 'js/typeCheck.js' %}></script>
+<script>
+    var array_name = new Array();
+    var array_id = new Array();
+    var array_quantity = new Array();
+    var service_array = new Array('revenue', 'tax')
+    var i=0;
+    function setValue(elementId, newValue)
+    {
+        document.getElementById(elementId).setAttribute("value", newValue)
+    }
+    var option;
+    $(document).ready( function(){
+        service_array.forEach( function(element){
+            option = document.createElement("option");
+            option.innerHTML = element;
+            console.log(element)
+            document.getElementById("ServiceSelect").appendChild(option)
+        })
+    })
+
+    function rbCheck()
+    {
+        if(document.getElementById("rbItems").checked)
+        {
+            document.getElementById("items_div").hidden = false;
+            document.getElementById("services_div").hidden = true;
+            document.getElementById("report_div").hidden = true;
+        }
+        else if(document.getElementById("rbServices").checked)
+        {
+            document.getElementById("items_div").hidden = true;
+            document.getElementById("services_div").hidden = false;
+            document.getElementById("report_div").hidden = true;
+
+        }
+        else if(document.getElementById("rbReports").checked)
+        {
+          document.getElementById("items_div").hidden = true;
+          document.getElementById("services_div").hidden = true;
+          document.getElementById("report_div").hidden = false;
+        }
+    }
+</script>
+<div class="container">
+    <div class="row">
+        <div class = "col"></div>
+        <div class="col-12" id="main-col">
+            <div class="items-col">
+                <h1>{{ storage.storage_name }}</h1><br>
+                <div class="controll-panel">
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-dark active">
+                            <input type="radio" name="options" id="rbItems" autocomplete="off" onchange=rbCheck() checked>Items
+                        </label>
+                        <label class="btn btn-dark">
+                            <input type="radio" name="options" id="rbServices" autocomplete="off" onchange="rbCheck()">Services
+                        </label>
+                        <label class="btn btn-dark">
+                            <input type="radio" name="options" id="rbReports" autocomplete="off" onchange="rbCheck()">Monthly reports
+                        </label>
+                    </div>
+                </div>
+                <br>
+                <div class="items-table" id="items_div">
+                <table class="table table-stripped" id="table">
+                    <tr class="">
+                        <th class = "txt-al-cntr">Name</th>
+                        <th class = "txt-al-cntr">Quantity</th>
+                        <th class = "txt-al-cntr">Price per 1</th>
+                        <th class = "txt-al-cntr">Total price</th>
+                        <th class = "txt-al-cntr">Date</th>
+                        <th class = "txt-al-cntr"></th>
+                        {% if request.user.is_superuser %}<th></th>{% endif %}
+                    </tr>
+                    {% for item in items %}
+                        <tr class="td-hl">
+                            <td class = "txt-al-cntr td-md">{{ item.item_name}}</td>
+                            <td class = "txt-al-cntr td-md">{{ item.item_quantity }}</td>
+                            <td class = "txt-al-cntr td-md">{{ item.item_price }}</td>
+                            <td class = "txt-al-cntr td-md">{{ item.item_total_price }}</td>
+                            <td class = "txt-al-cntr td-md">{{ item.item_adding_date }}</td>
+                            <td><a class="btn btn-sm btn-dark" href="/transport_item/item_id={{ item.id }}" role="button">Transport</a></td>
+                            <!--<td><a class="btn btn-sm btn-danger center" href="/delete_item/item_id={{ item.id }}" role="button">Delete</a></td>-->
+                            {% if request.user.is_superuser %}
+                                <td><button id="{{ item.item_name }}" name = "DeleteButton" type="button" class="btn btn-danger btn-sm" onclick="onDeleteButtonClick(this)" value = "text" data-toggle="modal" data-target="#exampleModal">Delete</button></td>
+                            {% endif %}
+                        </tr>
+                        <script>
+                            array_id[i] = parseInt({{ item.id }});
+                            array_name[i] = "{{ item.item_name }}";
+                            array_quantity[i] = parseInt({{ item.item_quantity }});
+                            setValue(array_name[i], i);
+                            i++
+                        </script>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+        <div class="service-col" id="services_div" hidden>
+            <a class="btn btn-dark mb-2 text-white" href="/add_service_stor/{{ storage.id }}">Add Service</a>
+            <a class="btn btn-dark mb-2 text-white" href="{% url 'add_service' %}">Create New Service</a>
+            <table class="table table-stripped" id="table">
+                    <tr class="">
+                        <th class = "txt-al-cntr">Name</th>
+                        <th class = "txt-al-cntr">Price</th>
+                        <th class = "txt-al-cntr">Date</th>
+                        <th class = "txt-al-cntr"></th>
+                    </tr>
+                    {% for service in services %}
+                        <tr class="td-hl">
+                            <td class = "txt-al-cntr td-md">{{ service.type}}</td>
+                            <td class = "txt-al-cntr td-md">{{ service.price }}</td>
+                            <td class = "txt-al-cntr td-md">{{ service.date }}</td>
+                            <td><a class="btn btn-sm btn-dark text-white" href="/storage/{{ storage.id }}/{{ service.id }}" role="button">Edit</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+        </div>
+        <div class="report-col" id="report_div" hidden>
+            <a class="btn btn-dark mb-2 text-white" href="/generate_prev_month_report/{{ storage.id }}">Generate report for previous month</a>
+            <table class="table table-stripped" id="table">
+                    <tr class="">
+                        <th class = "txt-al-cntr">Villa</th>
+                        <th class = "txt-al-cntr">Income</th>
+                        <th class = "txt-al-cntr">Expenses</th>
+                        <th class = "txt-al-cntr">Profit</th>
+                        <th class = "txt-al-cntr">Occupancy</th>
+                        <th class = "txt-al-cntr">Average price per night</th>
+                        <th class = "txt-al-cntr">Date</th>
+                        <th class = "txt-al-cntr"></th>
+                    </tr>
+                    {% for report in reports %}
+                        <tr class="td-hl">
+                            <td class = "txt-al-cntr td-md">{{report.villa}}</td>
+                            <td class = "txt-al-cntr td-md">{{ report.income }}</td>
+                            <td class = "txt-al-cntr td-md">{{ report.expenses }}</td>
+                            <td class = "txt-al-cntr td-md">{{ report.profit }}</td>
+                            <td class = "txt-al-cntr td-md">{{ report.occupancy }}%</td>
+                            <td class = "txt-al-cntr td-md">{{ report.avarange_price }}</td>
+                            <td class = "txt-al-cntr td-md">{{ report.month_name }} {{ report.year }}</td>
+                            <td><a class="btn btn-sm btn-dark text-white" href="/storage/pdf_report/{{ storage.id }}/{{ report.month }}/{{ report.year }}" role="button">Generate PDF</a></td>
+                        </tr>
+                    {% endfor %}
+            </table>
+        </div>
+    </div>
+    <div class = "col"></div>
+</div>
+</div>
+
+<script>
+    var active_btn;
+    function onDeleteButtonClick(button) {
+        document.getElementById("delete_text").innerHTML = "How many items of " + array_name[button.getAttribute("value")] + " you want to delete? (Max: " + array_quantity[button.getAttribute("value")] + ")";
+        document.getElementById("id_field").setAttribute("value", array_id[button.getAttribute("value")])
+        active_btn=button;
+    }
+
+    insertAlertSuccess({{ success }}, "You successfully deleted item", "main-col", "table")
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
+                <h5 class="modal-title" id="exampleModalLabel">Deleting item</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true" class="text-white">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modal-content">
+                <div id="delete_text">"Dou you really want to delete</div>
+                <form method = "post">
+                    {% csrf_token %}
+                    <input type="text" name = "item_quantity" class="form-control mb-1 mt-1" id="quantity_id">
+                    <input type="text" name = "item_id" class="form-control" id="id_field" hidden>
+                    <button type="button" class="btn btn-outline-dark" data-dismiss="modal">No</button>
+                    <button disabled id="yes-btn" type="submit" name="delete_items" class="btn btn-danger">Yes</button>
+                </form><br>
+            </div>
+            <div class="modal-footer bg-dark">
+
+            </div>
+        </div>
+    </div>
+</div>
+{% include 'footer.html' %}
+<script>
+    $( document ).ready( function() {
+        $( "#quantity_id" ).keyup( function() {
+            var QuantityInput = document.getElementById("quantity_id");
+            var SubmitButton = document.getElementById("yes-btn");
+            var data = QuantityInput.value;
+            if (!IsInt(data) || data >parseInt(array_quantity[active_btn.getAttribute("value")])) {
+                SubmitButton.disabled = true;
+                deleteAlert();
+                insertAlertWarning(1,"Looks like quantity field isn't integer or equals 0","modal-content")
+            }
+            else
+            {
+                deleteAlert();
+                SubmitButton.disabled = false
+            }
+        });
+    });
+</script>
+</body>
+</html>

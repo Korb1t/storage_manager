@@ -1,0 +1,35 @@
+{% if storages|length %}
+    <table class="table table-striped">
+        <tr>
+            <td colspan=3 class="bg-dark text-white">
+                <strong>Found {{ storages|length }} storages</strong>
+            </td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>Total objects quantity</td>
+        </tr>
+        {% for s in storages %}
+            <tr>
+                <td><a  href ="/storage/{{ s.id }}" >{{ s.storage_name }}</a></td>
+{#                {% with 0 as sum %}#}
+{#                    <td>{{ s.storage_name }}</td>#}
+{#                    {% for storage_item in storage_items %}#}
+{#                        {% if storage_item.storage.storage_name == s.storage_name %}#}
+{#                            {% add_variables sum storage_item.item_quantity as sum %}#}
+{#                        {% endif %}#}
+{#                    {% endfor %}#}
+{#                    <td>{{ sum }}</td>#}
+{#                {% endwith %}#}
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <table class="table table-stripped">
+        <tr>
+            <td colspan=2 class="bg-dark text-white">
+                Found 0 storages
+            </td>
+        </tr>
+    </table>
+{% endif %}

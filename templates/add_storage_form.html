@@ -1,0 +1,95 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Villa</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css' %}>
+</head>
+<body>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+{% include 'navbar.html' %}
+{% if user.is_superuser %}
+    <div class="container">
+        <div class="row">
+            <div class = "col"></div>
+            <div class="col-6" id="main-col">
+                <h1 class="center">Adding new storage</h1>
+                <form method="post" id="form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="InputName">Storage Name</label>
+                        <input type="text" name = "storage_name" class="form-control" id="InputName" aria-describedby="nameHelp" placeholder="Enter storage name" required onchange="onNameChangeValidate()">
+                        <br>
+                        <label for="storage_link"></label>
+                        <input type="text" name = "storage_link" class="form-control" id="storage_link" placeholder="Enter storage link">
+                        <br>
+                        <button disabled type="submit" class="btn btn-dark mt-2 center" id="SubmitButton" name="SubmitAndNew">Save and create another one</button>
+                        <button disabled type="submit" class="btn btn-dark mt-2 center" id="SubmitButton2" name="SubmitToIndex">Save</button>
+                    </div>
+                </form>
+            </div>
+            <div class = "col"></div>
+        </div>
+    </div>
+
+{% else %}
+    <h1>You don't have permission to do that</h1>
+{% endif %}
+{% include 'footer.html' %}
+</body>
+</html>
+
+<script src={% static 'js/insertAlert.js' %}></script>
+<script>
+    insertAlertSuccess({{ success }},"You successfully created new villa", "main-col");
+    function onNameChangeValidate()
+    {
+        var InputField = document.getElementById("InputName");
+        var SubmitButton = document.getElementById("SubmitButton");
+        var SubmitButton2 = document.getElementById("SubmitButton2");
+        var data = InputField.value;
+        if (data) {
+            SubmitButton.disabled = false;
+            SubmitButton2.disabled = false;
+            deleteAlert();
+        }
+        else
+        {
+            deleteAlert();
+            SubmitButton.disabled = true;
+            SubmitButton2.disabled = true;
+        }
+    }
+
+    $( document ).ready( function() {
+        $( "#InputName" ).keyup( function() {
+            var InputField = document.getElementById("InputName");
+            var SubmitButton = document.getElementById("SubmitButton");
+            var SubmitButton2 = document.getElementById("SubmitButton2");
+            var data = InputField.value;
+            if (data === "") {
+                SubmitButton.disabled = true;
+                SubmitButton2.disabled = true;
+                deleteAlert();
+            }
+                {% for s in storages %}
+                    else if (data === "{{ s.storage_name }}")
+                    {
+                        SubmitButton.disabled = true;
+                        SubmitButton2.disabled = true;
+                        deleteAlert();
+                        insertAlertWarning(1,"Looks like you already have storage with this name","main-col")
+                    }
+                {% endfor %}
+            else
+            {
+                deleteAlert();
+                SubmitButton.disabled = false;
+                SubmitButton2.disabled = false;
+            }
+        });
+    });
+
+</script>

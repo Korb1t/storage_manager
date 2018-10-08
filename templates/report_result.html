@@ -1,0 +1,24 @@
+{% load static %}
+{% load poll_exstras %}
+{% if items|length %}
+    <table class="table table-stripped">
+        <tr class="bg-dark text-white">
+            <th class = "txt-al-cntr">Date</th>
+            <th class = "txt-al-cntr">Name</th>
+            <th class = "txt-al-cntr">From</th>
+            <th class = "txt-al-cntr">To</th>
+            <th class = "txt-al-cntr">Quantity</th>
+            <th class = "txt-al-cntr">Person</th>
+        </tr>
+        {% for r in items %}
+            <tr class="{% if r.storage_to == "DELETED" %}bg-light-red td-hl-red{% else %}td-hl{% endif %}">
+                <td class = "txt-al-cntr">{{ r.date.day}}/{{ r.date.month }}/{{ r.date.year }} at {{ r.date.time }}</td>
+                <td class = "txt-al-cntr">{{ r.item}}</td>
+                <td class = "txt-al-cntr">{{ r.storage_from.storage_name }}</td>
+                <td class = "txt-al-cntr">{{ r.storage_to }}</td>
+                <td class = "txt-al-cntr">{{ r.quantity }}</td>
+                <td class = "txt-al-cntr">{{ r.person }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% endif %}

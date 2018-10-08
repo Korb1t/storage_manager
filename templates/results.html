@@ -1,0 +1,62 @@
+{% load poll_exstras %}
+{% if items|length %}
+    <table class="table table-striped">
+        <tr>
+            <td colspan=6 class="bg-dark text-white">
+                <strong>Found {{ items|length }} {%  if item|length == 1 %}item{% else %}items{% endif %}</strong>
+            </td>
+        </tr>
+        <td><strong>Name</strong></td>
+        <td><strong>Quantity</strong></td>
+        <td><strong>Price</strong></td>
+        <td><strong>Total Price</strong></td>
+        <td><strong>Adding date</strong></td>
+        <td><strong>Storage</strong></td>
+        {% for i in items %}
+            <tr class="td-hl cursor" onclick="document.location = '/storage/{{ i.storage.id }}'; ">
+                <td>{{ i.item_name }}</td>
+                <td>{{ i.item_quantity }}</td>
+                <td>{{ i.item_price }}</td>
+                <td>{{ i.item_total_price }}</td>
+                <td>{{ i.item_adding_date }}</td>
+                <td>{{ i.storage.storage_name }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <table class="table table-stripped">
+        <tr>
+            <td class="bg-dark text-white">
+                Found 0 items
+            </td>
+        </tr>
+    </table>
+{% endif %}
+
+{% if storages|length %}
+    <table class="table table-striped">
+        <tr>
+            <td colspan=3 class="bg-dark text-white">
+                <strong>Found {{ storages|length }} storages</strong>
+            </td>
+        </tr>
+        <tr>
+            <td><strong>Name</strong></td>
+            <td><strong>Total objects quantity</strong></td>
+        </tr>
+        {% for s in storages %}
+            <tr class="td-hl cursor" onclick="document.location = '/storage/{{ s.id }}'; ">
+                    <td>{{ s.storage_name }}</td>
+                    <td>{{ s|sum_of_elements }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <table class="table table-stripped">
+        <tr>
+            <td colspan=2 class="bg-dark text-white">
+                Found 0 storages
+            </td>
+        </tr>
+    </table>
+{% endif %}

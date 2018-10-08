@@ -1,0 +1,55 @@
+<script>function isEmail() {
+    var submitButton = document.getElementById("SubmitButton")
+    var ServiceSelect = document.getElementById("ServiceSelect");
+    var ServicePrice = document.getElementById("ServicePrice");;
+    var status = document.getElementById("status");
+    if (!ServicePrice){
+        submitButton.disabled = true
+    }
+   }</script>
+{#<div class="container">#}
+  <ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+      {% for service in service_details_list %}
+      <li><a data-toggle="tab" href="#{{ service.service_name }}">{{ service.preaty_service_name }}</a></li>
+      {% endfor %}
+  </ul>
+ <div class="tab-content">
+    <div id="home" class="tab-pane fade in active">
+      <h3>HOME</h3>
+      <p>r</p>
+    </div>
+  {% for service in service_details_list %}
+      <div id="{{ service.service_name }}" class="tab-pane fade">
+          <h3><{{ service.service_name }}/h3>
+      <div class="container">
+    <div class="row">
+        <div class="col-3">
+            <form method="POST">
+                {% csrf_token %}
+                <input style="display: none;" type="text" name="ServiceSelect" id="ServiceSelect" value="{{ service.service_name }}">
+                <label for="PriceInput">Add new service</label>
+                <input type="text" name = "service_price" class="form-control" id="ServicePrice" aria-describedby="price1Help" placeholder="Enter service price" required onchange="OnChangeValidateFloat()">
+                <button type="submit" class="btn btn-dark mt-2" id="SubmitButton" name="Submit" onclick="isEmail()">Submit</button>
+            </form>
+        </div>
+    </div>
+    <br>
+</div>
+      <table class="table table-stripped">
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>Date</th>
+        </tr>
+        {% for service_record in service.service_details  %}
+            <tr>
+                <td>{{ service.preaty_service_name }}</td>
+                <td>{{ service_record.price }}</td>
+                <td>{{ service_record.date }}</td>
+            </tr>
+        {% endfor %}
+      </table>
+        </div>
+  {% endfor %}
+  </div>

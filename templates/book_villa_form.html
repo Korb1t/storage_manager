@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css' %}>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+</head>
+<body>
+    {% include 'navbar.html' %}
+    <div class="container">
+        <div class="row">
+            <div class = "col"></div>
+            <div class="col-6" id="main-col">
+                <h1 id = "top-h1" class="center">Adding item to storage</h1>
+                <form method="POST" >
+                    {% csrf_token %}
+                    <div class="form-group" id="form">
+                        <label for="arrival_date">Arrival date</label>
+                        <input type="date" name = "arrival_date" class="form-control" id="arrival_date" aria-describedby="nameHelp" required>
+                        <br>
+                        <label for="moving_date">Leaving ate</label>
+                        <input type="date" name = "moving_date" class="form-control" id="moving_date_date" aria-describedby="nameHelp" required>
+                        <br>
+                        {{ form.notes }}
+{#                        <label for="InputPrice1">Price per 1 item</label>#}
+{#                        <div class="input-group mb-2 mb-sm-0">#}
+{#                            <input type="text" name = "item_price" class="form-control" id="InputPrice1" aria-describedby="price1Help" placeholder="Enter price per 1 item" required onchange="OnChangeValidateFloat()">#}
+{#                            <div class="input-group-addon">$</div>#}
+{#                        </div>#}
+                        <div class="mt-3 mb-2 text-muted">Note: New items are created in Main Storage</div>
+                        <button type="submit" class="btn btn-dark mt-2 center" id="SubmitButton" name="SubmitAndNew">Submit and add another one</button>
+                        <button type="submit" class="btn btn-dark mt-2 center" id="SubmitButton1" name="SubmitToIndex">Submit</button>
+                    </div>
+                </form>
+            </div>
+            <div class = "col"></div>
+        </div>
+    </div>
+    {% include 'footer.html' %}
+</body>
+</html>

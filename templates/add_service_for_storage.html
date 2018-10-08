@@ -1,0 +1,60 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add service for {{ storage.storage_name }}</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css' %}>
+    <link rel="stylesheet" href={% static 'css/storage_liststyle.css' %}>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+</head>
+<body>
+{% include 'navbar.html' %}
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+            <div class="col-6" id="main-col">
+                <h1>Add Service</h1>
+                <form method="post">
+                    {% csrf_token %}
+                    <label for="StorageName">Storage Name</label>
+                    <input type="text" name = "StorageName" class="form-control" id="StorageName" disabled value = {{ storage.storage_name }}>
+                    <label for="ServiceInput">Service Name</label><br>
+                    <select class="form-control" name="ServiceSelect" id="ServiceSelect">
+                        {% for service in services %}
+                        <option value="{{ service.name }}">{{ service.name }}</option>
+                        {% endfor %}
+                    </select><br>
+                    <label for="PriceInput">Price</label>
+                    <input type="text" name = "ServicePrice" class="form-control" id="ServicePrice" aria-describedby="price1Help" placeholder="Enter service price" required onchange="OnChangeValidateFloat()">
+                    <button type="submit" class="btn btn-dark mt-2" id="SubmitButton" name="SubmitService">Submit</button>
+                </form>
+            </div>
+        <div class="col-3"></div>
+    </div>
+</div>
+
+<script src={% static 'js/insertAlert.js' %}></script>
+<script src={% static 'js/typeCheck.js' %}></script>
+<script>
+
+    function OnChangeValidateFloat()
+    {
+        console.log('yey');
+        var PriceInput = document.getElementById("ServicePrice");
+        var SubmitButton = document.getElementById("SubmitButton");
+        var data = PriceInput.value;
+        if (!IsFloat(data)) {
+            deleteAlert();
+            insertAlertWarning(1,"Looks like your price field isn't good","main-col");
+            SubmitButton.disabled = true
+        }
+        else
+        {
+            SubmitButton.disabled = false
+        }
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+{% load static %}
+{% load poll_exstras %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css' %}>
+    <link rel="stylesheet" href={% static 'css/storage_liststyle.css' %}>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+    <script type="text/javascript">
+        $( document ).ready( function() {
+            $( '#q' ).keyup( function() {
+                q = $( '#q' ).val();
+                $( '#results' ).html( '&nbsp;' ).load( '{% url "search_storages" %}?q=' + q );
+            });
+        });
+    </script>
+</head>
+<body><script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script>
+    $('tr[data-href]').on("click", function() {
+        document.location = $(this).data('href');
+    });
+</script>
+{% include 'navbar.html' %}
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col">
+            <h1>Villa List</h1>
+            <table class="table table-stripped">
+                <tr class="bg-dark text-white">
+                    <th>Storage</th>
+                    <th>Total Quantity</th>
+                </tr>
+                {% for s in storages %}
+                    <tr class="td-hl cursor" onclick="document.location = '/financial_villa_info/{{ s.id }}'; ">
+                        <td>{{ s.storage_name }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</div>
+</body>
+</html>

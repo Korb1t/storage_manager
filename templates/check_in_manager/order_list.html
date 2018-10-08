@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order list</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css' %}>
+    <link rel="stylesheet" href={% static 'css/pricing.css' %}>
+</head>
+
+<body>
+{% include "check_in_manager/navbar.html" %}
+<div class="container">
+    <div class="card-deck mb-3 text-center">
+        {% for order in orders %}
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h3 class="my-0 font-weight-normal">Check-in date : {{ order.check_in_date }}</h3>
+                </div>
+                <div class="card-body {% if order.accepted_by_client == True %} card-accepted {% elif order.declined_by_client == True %} card-declined {% endif %}">
+                    <h4 class="my-0 font-weight-normal">Adults
+                        <small class="text-muted">/ childrens</small>
+                    </h4>
+                    <h1 class="card-title pricing-card-title">{{ order.number_of_adults }}
+                        <small class="text-muted">/ {{ order.number_of_kids_below_5 }}</small>
+                    </h1>
+                    <ul class="list-unstyled mt-3 mb-4">
+                        <li>Guest name: {{ order.guest_name }}</li>
+                        <li>Guest cell number: {{ order.guest_cell_number }}</li>
+                        <li>Guest email: {{ order.guest_email }}</li>
+                        <li>Early check-in required: {{ order.early_check_in_required }}</li>
+                        <li>Late check-out required: {{ order.late_check_out_required }}</li>
+                        <li>Source: {{ order.source }}</li>
+                        <li>Occasion: {{ order.spec_occasion }}</li>
+                    </ul>
+                    {% if order.waiting_for_manager == True %}
+                        <a href="/check_in_manager/order_pdf/{{ order.id }}" class='text-dark'>Open PDF</a>
+                        <br>
+                        <select class="btn-lg btn-outline-dark dropdown-toggle" name="Variants{{ order.id }}" id="Variants{{ order.id }}" onchange=VariantsChange("{{ order.id }}",true)>
+                            <option value="1">Villas to send: 1</option>
+                            <option value="2">Villas to send: 2</option>
+                            <option value="3">Villas to send: 3</option>
+                            <option value="4">Villas to send: 4</option>
+                        </select>
+                        <br>
+                        <br>
+                        <a href="/check_in_manager/send_variants/{{ order.id }}" role="button"
+                           class="btn btn-lg btn-block btn-outline-dark" id="sendVarsButton{{ order.id }}">Send Variants</a>
+                    {% elif order.accepted == True %}
+                        <a href="/check_in_manager/offer_pdf/{{ order.id }}" class='text-dark'>Open PDF</a>
+                        <button id='AcceptButton{{ order.id }}' class="btn btn-lg btn-block btn-outline-success"
+                                onclick="Accept({{ order.id }})">Accept
+                        </button>
+                        <button id='DeclineButton{{ order.id }}' class="btn btn-lg btn-block btn-outline-danger"
+                                onclick="Decline({{ order.id }})">Decline
+                        </button>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group" id="AcceptForm{{ order.id }}" hidden>
+
+                                <button id='SubmitAccept' class="btn btn-lg btn-block btn-outline-success">Submit
+                                </button>
+                                <br>
+                                <label for="OrderVilla{{ order.id }}">Chosen villa</label>
+                                <select class="form-control" name="OrderVilla{{ order.id }}"
+                                        id="OrderVilla{{ order.id }}">
+                                    <option value="{{ order.offer.villa1 }}">{{ order.offer.villa1 }}</option>
+                                    {% if order.offer.villa2 %}<option value="{{ order.offer.villa2 }}">{{ order.offer.villa2 }}</option>{% endif %}
+                                    {% if order.offer.villa3 %}<option value="{{ order.offer.villa3 }}">{{ order.offer.villa3 }}</option>{% endif %}
+                                    {% if order.offer.villa4 %}<option value="{{ order.offer.villa4 }}">{{ order.offer.villa4 }}</option>{% endif %}
+                                </select>
+                                <br>
+                                <label for="Balance">Balance</label>
+                                <input name="Balance" id="Balance" type="number" class="form-control">
+                                <label for="Price">Price</label>
+                                <input name="Price" id="Price" type="number" class="form-control">
+                            </div>
+                        </form>
+                        <form method="post">
+                            {% csrf_token %}
+                            <div class="form-group" id="DeclineForm{{ order.id }}" hidden>
+                                <select class="form-control" name="DeclineReason{{ order.id }}"
+                                        id="DeclineReason{{ order.id }}">
+                                    <option value="Chosed Other Villa">Chosed Other Villa</option>
+                                    <option value="Not going to Goa">Not going to Goa</option>
+                                    <option value="Chosed Hotel">Chosed Hotel</option>
+                                    <option value="Too Costly">Too Costly</option>
+                                </select>
+                                <br>
+                                <button id='SubmitDecline' class="btn btn-lg btn-block btn-outline-danger">Submit
+                                </button>
+                            </div>
+                        </form>
+                    {% elif order.accepted_by_client == True %}
+                        <!-- <a href="/check_in_manager/accept_pdf/{{ order.id }}" class='text-dark'>Open PDF</a> -->
+                        <h1>Status: Accepted</h1>
+                        <h2>Chosen villa: {{ order.chosen_villa }}</h2>
+                    {% elif order.declined_by_client == True %}
+                        <!-- <a href="/check_in_manager/decline_pdf/{{ order.id }}" class = 'text-dark' >Open PDF</a> -->
+                        <h1>Status: Declined</h1>
+                        <h2>Reason: {{ order.decline_reason }}</h2>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+</body>
+<script type="text/javascript">
+
+
+    function Accept(number) {
+        number = number.toString();
+        var AcceptButton = document.getElementById("AcceptButton".concat(number));
+        var DeclineButton = document.getElementById("DeclineButton".concat(number));
+        var AcceptForm = document.getElementById("AcceptForm".concat(number));
+        AcceptButton.hidden = true
+        DeclineButton.hidden = true
+        AcceptForm.hidden = false
+    }
+
+    function Decline(number) {
+        number = number.toString();
+        var AcceptButton = document.getElementById("AcceptButton".concat(number));
+        var DeclineButton = document.getElementById("DeclineButton".concat(number));
+        var DeclineForm = document.getElementById("DeclineForm".concat(number));
+        AcceptButton.hidden = true
+        DeclineButton.hidden = true
+        DeclineForm.hidden = false
+    }
+</script>
+
+<script>
+    function VariantsChange(id,a)
+    {   console.log('Variants' + id)
+        link = document.getElementById('sendVarsButton' + id)
+        numberE = document.getElementById('Variants' + id)
+        console.log(numberE)
+        number = numberE.options[numberE.selectedIndex].value
+        if(a === true)
+        {
+            link.href = link.href.slice(0,-1*id.length)
+        }
+        link.href = link.href + '+' + number
+    }
+    i=0
+    for(i={{ min }};i<={{ max }};i++)
+    {
+        VariantsChange(i,false)
+    }
+
+</script>
+
+</html>

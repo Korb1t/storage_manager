@@ -1,0 +1,54 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Send order #{{ order.id }} variants</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css'%}>
+    <link rel="stylesheet" href={% static 'css/pricing.css'%}>
+</head>
+<body>
+{% include "check_in_manager/navbar.html" %}
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group" id="form">
+                {% for i in range %}
+                    <div id={% cycle 'VillaForm1' 'VillaForm2' 'VillaForm3' 'VillaForm4' %}>
+                        <label for={% cycle "Villa1Name" "Villa2Name" "Villa3Name" "Villa4Name" %}>Villa {{ i }}</label>
+                        <select class="form-control" name={% cycle "Villa1Name" "Villa2Name" "Villa3Name" "Villa4Name" %} id="Villa1Name">
+                            {% for villa in villas %}
+                                <option value="{{ villa.storage_name}}">{{ villa.storage_name}}</option>
+                            {% endfor %}
+                        </select>
+                        <label for={% cycle 'Villa1Price' 'Villa2Price' 'Villa3Price' 'Villa4Price' %}>Villa {{ i }} Price Per Night</label>
+                        <div class="input-group mb-2 mb-sm-0">
+                            <input type="number" name={% cycle 'Villa1Price' 'Villa2Price' 'Villa3Price' 'Villa4Price' %} class="form-control" id="Villa1Price" aria-describedby="quantityHelp" placeholder="Enter Villa 1 Price per night"
+                                   onchange="OnChangeValidate()" required>
+                            <div class="input-group-addon">$</div>
+                        </div>
+                        <label for="Villa1Tax">Villa {{ i }} Tax</label>
+                        <div class="input-group mb-2 mb-sm-0">
+                            <input type="number" name={% cycle 'Villa1Tax' 'Villa2Tax' 'Villa3Tax' 'Villa4Tax' %} class="form-control" id="Villa1Tax" aria-describedby="price1Help" placeholder="Enter villa 1 tax"
+                                   required onchange="OnChangeValidateFloat()">
+                            <div class="input-group-addon">%</div>
+                        </div>
+                        <hr>
+                    </div>
+                {% endfor %}
+                    <button type="submit" class="btn btn-dark mt-2 center" id="SubmitButton1" name="SubmitToIndex">Submit</button>
+                </div>
+            </form>
+            <div class="col-3"></div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>

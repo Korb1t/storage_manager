@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Service</title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css' %}>
+    <link rel="stylesheet" href={% static 'css/storage_liststyle.css' %}>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+</head>
+<body>
+{% include 'navbar.html' %}
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6">
+            <h1>Add Service Type</h1>
+            <form method="post">
+                {% csrf_token %}
+                <label for="ServiceInput">Service Type Name</label><br>
+                <input type="text" name = "ServiceName" class="form-control" id="ServiceName" placeholder="Enter service name" required>
+                <button type="submit" class="btn btn-dark mt-2" id="SubmitButton" name="SubmitServiceType">Submit</button>
+            </form>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</div>
+</body>
+</html>

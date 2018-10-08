@@ -1,0 +1,173 @@
+
+html, body {
+    padding-bottom: 3vh;
+}
+
+.center
+{
+    margin: auto;
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+}
+
+.half
+{
+
+}
+
+.txt-al-cntr
+{
+    text-align: center;
+}
+
+.brd
+{
+    border: 1px solid black !important;
+}
+
+.td-hl
+{
+    transition: background-color 0.2s ease;
+}
+
+.td-hl:hover
+{
+    background-color: #bbbbbb;
+    cursor: pointer;
+}
+
+.td-hl-red
+{
+    transition: background-color 0.2s ease;
+}
+
+.td-hl-red:hover
+{
+    background-color: #ff9799;
+    cursor: pointer;
+}
+
+.td-md
+{
+    vertical-align: middle !important;
+}
+
+@keyframes slideInFromTopSuccess {
+    0% {
+        transform: translateY(-130%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.alert-show-success
+{
+    animation-duration: 0.7s; /* the duration of the animation */
+    animation-timing-function: ease-out; /* how the animation will behave */
+    animation-delay: 0s; /* how long to delay the animation from starting */
+    animation-iteration-count: 1; /* how many times the animation will play */
+    animation-name: slideInFromTopSuccess; /* the name of the animation we defined above */
+}
+
+@keyframes slideInFromTopWarning {
+    0% {
+        transform: translateY(-10%);
+    }
+    20% {
+        transform: translateY(10%);
+    }
+    40% {
+        transform: translateY(-10%);
+    }
+    60% {
+        transform: translateY(10%);
+    }
+    80% {
+        transform: translateY(-10%);
+    }
+    100% {
+        transform: translateY(10%);
+    }
+}
+
+.alert-show-warning
+{
+    animation-duration: 0.25s; /* the duration of the animation */
+    animation-timing-function: ease-out; /* how the animation will behave */
+    animation-delay: 0s; /* how long to delay the animation from starting */
+    animation-iteration-count: 1; /* how many times the animation will play */
+    animation-name: slideInFromTopWarning; /* the name of the animation we defined above */
+}
+
+.footer {
+    height: 4vh;
+    position: fixed;
+    width: 100%;
+    top: 96vh;
+}
+
+/* p{
+    line-height: 4vh;
+    width: 17vw;
+    margin: 0 auto;
+    color: #fff;
+    font-size: 2vh;
+    padding: auto 0;
+    text-align: center;
+    vertical-align: center;
+} */
+
+.bg-light-red{
+    background-color: #fdc9bd;
+}
+
+.btn-dark {
+    cursor: pointer;
+}
+
+.cursor {
+    cursor: pointer;
+}
+
+
+
+.order-list-table>thead>tr>th {
+    text-align: center;
+}
+
+.order-list-table>tbody>tr>td {
+    text-align: center;
+}
+
+.order-info {
+    margin-top: 20px;
+}
+
+.order-info>p {
+    color: black;
+}
+
+.card-deck {
+    margin-top: 25px!important;
+}
+
+.card-accepted {
+    background-color: #7DE89F
+}
+
+.card-declined {
+    background-color: #FFA5B6
+}
+
+.text_align_center{
+    text-align: center;
+}
+
+.filter_orders {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}

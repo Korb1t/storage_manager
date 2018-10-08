@@ -1,0 +1,69 @@
+{% if user.is_authenticated %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+    <nav class="navbar navbar-expand-lg navbar-dark  bg-dark">
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent"
+                aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/">Storage Manager</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'orders_table' %}">Orders table</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/check_in_manager/accept_decline_order_list">Order List</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/check_in_manager/create_new_order/">Create new order</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/check_in_manager/add_new_sources/">Create new sources</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/check_in_manager/add_new_occasions/">Create new spec occasion</a>
+                </li>
+            </ul>
+        </div>
+        <form class="form-inline my-2 my-lg-0">
+            {% if user.is_authenticated %}
+                <div class="dropdown">
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Notifications <span class="badge badge-light">{{ alerts_count }}</span>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        {% for alert in alerts %}
+                            <a class="dropdown-item"
+                               href="/check_in_manager/order_list/order/{{ alert.id }}">{{ alert.guest_name }} will
+                                arrive tomorrow</a>
+                        {% endfor %}
+                        {% for alert in call_alerts %}
+                            <a class="dropdown-item"
+                               href="/check_in_manager/order_list/order/{{ alert.id }}">{{ alert.guest_name }}
+                                wasn't called more than 10 days</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                <a class="nav-link" style="color: white">User: {{ user.username }}</a>
+
+                <a href="/logout">
+                    <button type="button" class="btn btn-outline-light">Log out</button>
+                </a>
+            {% else %}
+                <a href="login/">
+                    <button type="button" class="btn btn-outline-light">Log in</button>
+                </a>
+            {% endif %}
+        </form>
+
+
+    </nav>
+{% else %}
+    <meta http-equiv="refresh" content="0; url=/login"/> {% endif %}

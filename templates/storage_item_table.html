@@ -1,0 +1,33 @@
+{% load static %}
+<table class="table table-stripped" id="table">
+    <tr class="">
+        <th class = "txt-al-cntr">Name</th>
+        <th class = "txt-al-cntr">Quantity</th>
+        <th class = "txt-al-cntr">Price per 1</th>
+        <th class = "txt-al-cntr">Total price</th>
+        <th class = "txt-al-cntr">Date</th>
+        <th class = "txt-al-cntr"></th>
+        {% if request.user.is_superuser %}<th></th>{% endif %}
+    </tr>
+    {% for item in items %}
+        <tr class="td-hl">
+            <td class = "txt-al-cntr td-md">{{ item.item_name}}</td>
+            <td class = "txt-al-cntr td-md">{{ item.item_quantity }}</td>
+            <td class = "txt-al-cntr td-md">{{ item.item_price }}</td>
+            <td class = "txt-al-cntr td-md">{{ item.item_total_price }}</td>
+            <td class = "txt-al-cntr td-md">{{ item.item_adding_date }}</td>
+            <td><a class="btn btn-sm btn-dark" href="/transport_item/item_id={{ item.id }}" role="button">Transport</a></td>
+            <!--<td><a class="btn btn-sm btn-danger center" href="/delete_item/item_id={{ item.id }}" role="button">Delete</a></td>-->
+            {% if request.user.is_superuser %}
+                <td><button id="{{ item.item_name }}" name = "DeleteButton" type="button" class="btn btn-danger btn-sm" onclick="onDeleteButtonClick(this)" value = "text" data-toggle="modal" data-target="#exampleModal">Delete</button></td>
+            {% endif %}
+        </tr>
+        <script>
+            array_id[i] = parseInt({{ item.id }});
+            array_name[i] = "{{ item.item_name }}";
+            array_quantity[i] = parseInt({{ item.item_quantity }});
+            setValue(array_name[i], i);
+            i++
+        </script>
+    {% endfor %}
+</table>

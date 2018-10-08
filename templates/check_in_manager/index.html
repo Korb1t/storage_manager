@@ -1,0 +1,115 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Check-in manager</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css' %}>
+</head>
+
+<body>
+{% include 'check_in_manager/navbar.html' %}
+
+<form method="post">
+    {% csrf_token %}
+    <div class="filter_orders">
+        <label for="from_date">From:</label>
+        <input type="date" id="from_date" name="from_date">
+        <label for="to_date">To:</label>
+        <input type="date" id="to_date" name="to_date">
+{#        <label for="villa">Villa:</label>#}
+{#        <select name="villa" id="villa">#}
+{#            <option value="" selected="selected">---SELECT---</option>#}
+{#            {% for villa in villas %}#}
+{#                <option>{{ villa.storage_name }}</option>#}
+{#            {% endfor %}#}
+{#        </select>#}
+{#        <label for="manager">Manager:</label>#}
+{#        <select name="manager" id="manager">#}
+{#            <option value="" selected="selected">---SELECT---</option>#}
+{#            {% for user in users %}#}
+{#                <option>{{ user.username }}</option>#}
+{#            {% endfor %}#}
+{#        </select>#}
+        <input type="submit">
+    </div>
+</form>
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th scope="col">Order #</th>
+        <th scope="col">Order Status</th>
+        <th scope="col">Source</th>
+        <th scope="col">Check-in</th>
+        <th scope="col">Check-out</th>
+        <th scope="col">Occupancy time</th>
+        <th scope="col">Guest Name</th>
+        <th scope="col">Guest cell number</th>
+        <th scope="col">Guest e-mail</th>
+        <th scope="col">Balance</th>
+        <th scope="col">Price</th>
+        <th scope="col">Inclusions</th>
+        <th scope="col">Notes</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for order in orders %}
+        <tr>
+            <td>
+                <a href="/check_in_manager/order_list/order/{{ order.id }}">{{ order.id }}</a>
+            </td>
+            <td>
+                {% if order.waiting_for_manager %}
+                    <span style="color: #505050;">In Process</span>
+                {% elif order.accepted_by_client %}
+                    <span style="color: green;">Accepted by client</span>
+                {% elif order.declined_by_client %}
+                    <span style="color: red;">Declined. Reason: {{ order.decline_reason }}</span>
+                {% endif %}
+            </td>
+            <td>{{ order.source }}</td>
+            <td>
+                {% if order.early_check_in_required %}
+                    <span style="color: firebrick;">{{ order.check_in_date }}</span>
+                {% else %}
+                    {{ order.check_in_date }}
+                {% endif %}
+            </td>
+            <td>
+                {% if order.late_check_out_required %}
+                    <span style="color: blue;">{{ order.check_out_date }}</span>
+                {% else %}
+                    {{ order.check_out_date }}
+                {% endif %}
+            </td>
+            <td>{{ order.check_in_date|timesince:order.check_out_date }}</td>
+            <td>{{ order.guest_name }}</td>
+            <td>{{ order.guest_cell_number }}</td>
+            <td>{{ order.guest_email }}</td>
+            <td>{{ order.balance }}</td>
+            <td>{{ order.price }}</td>
+            <td>
+                {% for inclusion in inclusions %}
+                    {% if inclusion.order.id == order.id %}
+                        {{ inclusion.inclusion }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td>
+                {% for note in notes %}
+                    {% if note.order.id == order.id %}
+                        {{ note.note }}
+                    {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+</body>
+
+</html>

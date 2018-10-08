@@ -1,0 +1,120 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Create new order</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css' %}>
+</head>
+
+<body>
+{% include 'check_in_manager/navbar.html' %}
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6" id="main-col">
+            <h1>Create new order</h1>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group" id="form">
+                    <label for="order_guest_name">Guest Name</label>
+                    <input type="text" name="order_guest_name" class="form-control" id="order_guest_name"
+                           value="{{ order.guest_name }}">
+                    <br>
+                    <label for="order_guest_cell_number">Guest's Cell Number</label>
+                    <input type="text" name="order_guest_cell_number" class="form-control" id="order_guest_cell_number"
+                           value="{{ order.guest_cell_number }}">
+                    <br>
+                    <label for="order_guest_email">Guest's E-mail</label>
+                    <input type="email" name="order_guest_email" class="form-control" id="order_guest_email"
+                           value="{{ order.guest_email }}">
+                    <br>
+                    <label for="order_guest_watsapp">Guest's WhatsApp</label>
+                    <input type="text" name="order_guest_watsapp" class="form-control" id="order_guest_watsapp"
+                           value="{{ order.guest_watsapp }}">
+                    <br>
+                    <label for="order_check_in_date">Check-In date</label>
+                    <input type="date" name="order_check_in_date" class="form-control" id="order_check_in_date"
+                           value="{{ order_check_in_date }}">
+                    <br>
+                    <label for="order_check_out_date">Check-Out date</label>
+                    <input type="date" name="order_check_out_date" class="form-control" id="order_check_out_date"
+                           value="{{ order_check_out_date }}">
+                    <br>
+                    {% if order.early_check_in_required %}
+                        <input type="checkbox" name="order_early_check_in_required" class="form-check-input"
+                               id="order_early_check_in_required" checked>
+                    {% else %}
+                        <input type="checkbox" name="order_early_check_in_required" class="form-check-input"
+                               id="order_early_check_in_required">
+                    {% endif %}
+                    <label for="order_early_check_in_required" class="form-check-label">Early Check-In Required</label>
+                    <br>
+                    {% if order.late_check_out_required %}
+                        <input type="checkbox" name="order_late_check_out_required" class="form-check-input"
+                               id="order_late_check_out" checked>
+                    {% else %}
+                        <input type="checkbox" name="order_late_check_out_required" class="form-check-input"
+                               id="order_late_check_out">
+                    {% endif %}
+                    <label for="order_late_check_out" class="form-check-label">Early Check-Out Required</label>
+                    <hr>
+                    <label for="order_number_of_adults">Number of Adults</label>
+                    <input type="text" name="order_number_of_adults" class="form-control" id="order_number_of_adults"
+                           value="{{ order.number_of_adults }}">
+                    <br>
+                    <label for="order_number_of_kids_below_5">Number of Kids below 5 years</label>
+                    <input type="text" name="order_number_of_kids_below_5" class="form-control"
+                           id="order_number_of_kids_below_5" value="{{ order.number_of_kids_below_5 }}">
+                    <br>
+                    <label for="order_source_name">Source</label>
+                    <select class="form-control" name="order_source_name" id="order_source_name">
+                        <option value="{{ order.source.source_name }}">{{ order.source.source_name }}</option>
+                        {% for source in sources %}
+                            <option>{{ source.source_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="order_special_occasion">Special Occasion</label>
+                    <select class="form-control" name="order_special_occasion" id="order_special_occasion">
+                        {% for occ in spec_occasions %}
+                            <option value="{{ order.spec_occasion.spec_occasion_name }}">{{ order.spec_occasion.spec_occasion_name }}</option>
+                            <option>{{ occ.spec_occasion_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <label for="order_inclusion">Inclusions</label>
+                    <input type="text" name="order_inclusion" class="form-control" id="order_inclusion"
+                           value="{{ order_inclusion.inclusion }}">
+                    <br>
+                    <label for="order_note">Notes</label>
+                    <input type="text" name="order_note" class="form-control" id="order_note" value="{{ order_note.note }}">
+                    <br>
+                    <label for="order_price">Order price</label>
+                    <input type="text" name="order_price" class="form-control" id="order_price"
+                           value="{% if order.price %}{{ order.price }}{% else %}0{% endif %}">
+                    <br>
+                    <label for="order_balance">Order balance</label>
+                    <input type="text" name="order_balance" class="form-control" id="order_balance"
+                           value="{% if order.balance %}{{ order.balance }}{% else %}0{% endif %}">
+                    <br>
+                    <label for="order_comment">Comment</label>
+                    <input type="text" name="order_comment" class="form-control" id="order_comment"
+                           value="{{ order.comment }}">
+                    <br>
+                    <button type="submit" class="btn btn-dark mt-2 center" id="submit" name="submit">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Order #{{ order.id }} Details</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb"
+          crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css' %}>
+</head>
+
+<body>
+{% include "check_in_manager/navbar.html" %}
+
+<div class="card text-center">
+    {% if should_be_alerted %}
+        <form method="POST">
+            <h3>This guest will arrive tomorrow.Please don't forget to contact him</h3>
+            {% csrf_token %}
+            <button type="submit" class="btn btn-dark mt-2 center" id="alert_done" name="alert_done">Done</button>
+        </form>
+    {% endif %}
+    <div class="card-header">
+        Order #1 created by {{ order.creator_name }}
+        <a href="{{ order.id }}/edit/">Edit order</a>
+    </div>
+    <div class="card-body">
+        <h3 class="card-title">
+            {% if order.waiting_for_manager %}
+                In Process
+            {% elif order.accepted_by_client %}
+                Chosen villa: {{ order.chosen_villa }}
+            {% elif order.declined_by_client %}
+                Declined. Reason: {{ order.decline_reason }}
+            {% endif %}
+        </h3>
+        <hr>
+        <div class="card-text">
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item">Guest name: <strong>{{ order.guest_name }}</strong></li>
+                <li class="list-group-item">Guest cell number: <strong>{{ order.guest_cell_number }}</strong></li>
+                <li class="list-group-item">Check-in date: <strong>{{ order.check_in_date }}</strong></li>
+                <li class="list-group-item">Check-out date: <strong>{{ order.check_out_date }}</strong></li>
+                <li class="list-group-item">Occupancy
+                    time: <strong>{{ order.check_in_date|timesince:order.check_out_date }}</strong></li>
+                <li class="list-group-item">Guest e-mail: <strong>{{ order.guest_email }}</strong></li>
+                <li class="list-group-item">Balance: <strong>{{ order.balance }}</strong></li>
+                <li class="list-group-item">
+                    Inclusions:
+                    {% for inclusion in inclusions %}
+                        {% if inclusion.order.id == order.id %}
+                            <strong>{{ inclusion.inclusion }}</strong>
+                        {% endif %}
+                    {% endfor %}
+                </li>
+                <li class="list-group-item">
+                    Notes:
+                    {% for note in notes %}
+                        {% if note.order.id == order.id %}
+                            <strong>{{ note.note }}</strong>
+                        {% endif %}
+                    {% endfor %}
+                </li>
+                <li class="list-group-item">
+                    Comments:
+                    <strong>{{ order.comment }}</strong>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-dark mt-2 center" id="add_call" name="add_call">Add call notes</button>
+    </form>
+    <h3>Calls</h3>
+    {% if order_calls %}
+        {% for call in order_calls %}
+            <h5> Call date: {{ call.date_of_call }}</h5>
+            <h5>Call notes</h5>
+            <pre>{{ call.message }}</pre>
+        {% endfor %}
+    {% else %}
+        <h4>There is no calls yet</h4>
+    {% endif %}
+</div>
+
+</body>
+</html>

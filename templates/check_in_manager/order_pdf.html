@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Order number: {{ order.id }}</title>
+</head>
+
+<body>
+    <h1 style="text-align: center;">
+        Order number: {{ order.id }}, created by: {{ order.creator_name }}
+    </h1>
+    <h2>Guest details:</h2>
+    <h3>Guest name: {{ order.guest_name }}</h3>
+    <h3>Guest cell number: {{ order.guest_cell_number }}</h3>
+    <h3>Guest email: {{ order.guest_email }}</h3>
+    <h3>Guest watsapp: {{ order.guest_watsapp }}</h3>
+    <h3>Check-in date: {{ order.check_in_date }} | Early check-in required: {{ order.early_check_in_required }}</h3>
+    <h3>Check-out date: {{ order.check_out_date }} | Late check-out required: {{ order.late_check_out_required }}</h3>
+    <h3>Number of adults/kids below 5: {{ order.number_of_adults }}/{{ order.number_of_kids_below_5 }}</h3>
+    <h3>Source: {{ order.source }}</h3>
+    <h3>Spec occasion: {{ order.spec_occasion }}</h3>
+
+</body>
+
+</html>

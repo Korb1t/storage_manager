@@ -1,0 +1,53 @@
+{% load static %}
+{% load poll_exstras %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css'%}>
+</head>
+<body>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script type="text/javascript">
+    var rev = 1;
+    $( document ).ready( function() {
+        $( '#results' ).html( '&nbsp;' ).load( '{% url "report_search" %}?q=&rev=' + rev);
+        $( '#q' ).keyup( function() {
+            q = $( '#q' ).val();
+            $( '#results' ).html( '&nbsp;' ).load( '{% url "report_search" %}?q=' + q +"&rev=" + rev);
+        });
+    });
+
+    function changeRev()
+    {
+        if (rev === 1)
+            rev = 0;
+        else
+            rev = 1;
+        refresh();
+    }
+
+    function refresh()
+    {
+        q = $( '#q' ).val();
+        $( '#results' ).html( '&nbsp;' ).load( '{% url "report_search" %}?q=' + q +"&rev=" + rev);
+    }
+</script>
+{% include 'navbar.html' %}
+<div class="container">
+    <div class="row">
+        <div class = "col"></div>
+        <div class="col-8">
+            <h1>Report</h1>
+            <input id="q" type="text" class="form-control" placeholder="Search items here..." />
+            <button type="button" class="btn btn-dark mt-2 mb-2" onclick=changeRev()>Revers</button>
+            <div class="col-12 pl-0 pr-0" id="results"></div>
+        </div>
+        <div class = "col"></div>
+    </div>
+</div>
+{% include 'footer.html' %}
+</body>
+</html>

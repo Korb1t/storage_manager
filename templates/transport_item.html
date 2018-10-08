@@ -1,0 +1,101 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href={% static 'css/styles.css' %}>
+</head>
+<body>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.9.1.js"></script>
+{% include 'navbar.html' %}
+<div class="container">
+    <div class="row">
+        <div class = "col"></div>
+        <div class="col-6" id="main-div">
+            <h1>Transporting items</h1>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group" id="form">
+                    <label for="InputName">Storage to transport from</label>
+                    <input type="text" name = "storage_from_name" class="form-control" id="InputName" aria-describedby="nameHelp" disabled value={{ storage_from.storage_name }}>
+                    <br>
+                    <label for="InputName">Item to transport</label>
+                    <input type="text" name = "item_name" class="form-control" id="InputName" aria-describedby="nameHelp" disabled value={{ item_to_transport.item_name }}>
+                    <br>
+                    <label for="InputQuantity">Item Quantity</label>
+                    <input type="text" name = "item_quantity" class="form-control" id="InputQuantity" aria-describedby="quantityHelp" placeholder="Enter item quantity (only integers)" onchange="OnChangeValidate()" required>
+                    <br>
+                    <label for="InputName">Destination Storage</label>
+                    <select class="form-control" name = "storage_to_name">
+                        <!--<option selected disabled hidden>Select Destination Storage</option>-->
+                        {% for stor in storages %}
+                            {% if stor != storage_from %}
+                                <option>{{ stor.storage_name }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <label for="InputPrice1">Person</label>
+                    <input type="text" name = "person_name" class="form-control" id="InputPrice1" aria-describedby="price1Help" placeholder="Person name" required>
+                    <br>
+                    <button type="submit" class="btn btn-dark mt-2 center" id="SubmitButton">Submit</button>
+                </div>
+            </form>
+        </div>
+        <div class = "col"></div>
+    </div>
+</div>
+{% include 'footer.html' %}
+</body>
+</html>
+
+<script src={% static 'js/insertAlert.js' %}></script>
+<script src={% static 'js/typeCheck.js' %}></script>
+<script>
+
+    function OnChangeValidate() {
+        var QuantityInput = document.getElementById("InputQuantity");
+        var SubmitButton = document.getElementById("SubmitButton");
+        var data = QuantityInput.value;
+        if (!IsInt(data)) {
+            SubmitButton.disabled = true;
+            deleteAlert();
+            insertAlertWarning(1, "Looks like quantity field isn't integer", "form", "SubmitButton")
+        }
+        else if (data > parseInt({{ item_to_transport.item_quantity }})) {
+            SubmitButton.disabled = true;
+            deleteAlert();
+            insertAlertWarning(1, "Looks like you are trying to transport more than you can", "form", "SubmitButton");
+        }
+        else {
+            deleteAlert();
+            SubmitButton.disabled = false;
+        }
+    }
+        $( document ).ready( function() {
+            $( "#InputQuantity" ).keyup( function() {
+                var QuantityInput = document.getElementById("InputQuantity");
+                var SubmitButton = document.getElementById("SubmitButton");
+                var data = QuantityInput.value;
+                if (!IsInt(data)) {
+                    SubmitButton.disabled = true;
+                    deleteAlert();
+                    insertAlertWarning(1,"Looks like quantity field isn't integer","form","SubmitButton")
+                }
+                else if(data>parseInt({{ item_to_transport.item_quantity }})) {
+                    SubmitButton.disabled = true;
+                    deleteAlert();
+                    insertAlertWarning(1,"Looks like you are trying to transport more than you can","form","SubmitButton");
+                }
+                else
+                {
+                    deleteAlert();
+                    SubmitButton.disabled = false;
+                }
+            });
+        });
+
+    insertAlertSuccess({{ success }}, "You successfully transported item", "form","SubmitButton")
+</script>

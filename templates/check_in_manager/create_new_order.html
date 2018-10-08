@@ -1,0 +1,141 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Create new order</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+
+    <link rel="stylesheet" href={% static 'css/styles.css' %}>
+</head>
+
+<body>
+
+{% include 'check_in_manager/navbar.html' %}
+<div class="container">
+    <div class="row">
+        <div class="col-3"></div>
+        <div class="col-6" id="main-col">
+            <h1>Create new order</h1>
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group" id="form">
+                    <label for="GuestName">Guest Name</label>
+                    <input type="text" name="GuestName" class="form-control" id="GuestName"
+                           placeholder="Enter guest name" required>
+                    <br>
+                    <label for="GuestCellNumber">Guest's Cell Number</label>
+                    <input type="text" name="GuestCellNumber" class="form-control" id="GuestCellNumber"
+                           placeholder="Enter guest cell phone number"
+                           onchange="" required>
+                    <br>
+                    <label for="GuestEmail">Guest's E-mail</label>
+                    <input type="email" name="GuestEmail" class="form-control" id="GuestEmail"
+                           placeholder="Enter guest's e-mail" required onchange="">
+                    <br>
+                    <label for="GuestWhatsApp">Guest's WhatsApp</label>
+                    <input type="text" name="GuestWhatsApp" class="form-control" id="GuestWhatsApp"
+                           placeholder="Enter guest's WhatsApp">
+                    <br>
+                    <label for="CheckInDate">Check-In date</label>
+                    <input type="date" name="CheckInDate" class="form-control" id="CheckInDate"
+                           placeholder="Enter Check-In date" required>
+                    <br>
+                    <label for="CheckInDate">Check-Out date</label>
+                    <input type="date" name="CheckOutDate" class="form-control" id="CheckOutDate"
+                           placeholder="Enter Check-In date" required>
+                    <br>
+                    <input type="checkbox" name="EarlyCheckIn" class="form-check-input" id="EarlyCheckIn">
+                    <label for="EarlyCheckIn" class="form-check-label">Early Check-In Required</label>
+                    <br>
+                    <input type="checkbox" name="LateCheckOut" class="form-check-input" id="LateCheckOut">
+                    <label for="LateCheckOut" class="form-check-label">Early Check-Out Required</label>
+                    <hr>
+                    <label for="NumberOfAdults">Number of Adults</label>
+                    <input type="text" name="NumberOfAdults" class="form-control" id="NumberOfAdults"
+                           placeholder="Enter number of adults" required>
+                    <br>
+                    <label for="NumberOfKids">Number of Kids below 5 years</label>
+                    <input type="text" name="NumberOfKids" class="form-control" id="NumberOfKids"
+                           placeholder="Enter number of kids below 5"
+                           required>
+                    <br>
+                    <label for="Source">Source</label>
+                    <select class="form-control" name="Source" id="Source">
+                        {% for source in sources %}
+                            <option>{{ source.source_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="SpecOccasion">Special Occasion</label>
+                    <select class="form-control" name="SpecOccasion" id="SpecOccasion">
+                        {% for occ in occasions %}
+                            <option>{{ occ.spec_occasion_name }}</option>
+                        {% endfor %}
+                    </select>
+                    <br>
+                    <label for="Inclusions">Inclusions</label>
+                    <input type="text" name="Inclusions" class="form-control" id="Inclusions" placeholder="Inclusions">
+                    <br>
+                    <label for="Notes">Notes</label>
+                    <input type="text" name="Notes" class="form-control" id="Notes" placeholder="Notes">
+                    <br>
+                    <label for="Comment">Comment</label>
+                    <input type="text" name="Comment" class="form-control" id="Comment" placeholder="Comment">
+                    <br>
+                    <button type="submit" class="btn btn-dark mt-2 center" id="SubmitButton" name="SubmitAndNew">
+                        Submit
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="col-3"></div>
+    </div>
+</div>
+{% include 'footer.html' %}
+<script src={% static 'js/insertAlert.js' %}></script>
+<script>
+    Element.prototype.remove = function () {
+        this.parentElement.removeChild(this);
+    };
+
+
+    function insertAlertSuccess(isSuccess, string, idOfParentElement, idToInsertBefore) {
+        if (parseInt(isSuccess) === 1) {
+            var successAlert = document.createElement("div");
+            successAlert.setAttribute("class", "alert alert-success alert-show-success");
+            successAlert.setAttribute("role", "alert");
+            successAlert.setAttribute("id", "alert");
+            successAlert.innerHTML = string;
+            document.getElementById(idOfParentElement).insertBefore(successAlert, document.getElementById(idToInsertBefore))
+        }
+    }
+
+    function insertAlertWarning(isSuccess, string, idOfParentElement, idToInsertBefore) {
+        if (parseInt(isSuccess) === 0) {
+            var successAlert = document.createElement("div");
+            successAlert.setAttribute("class", "alert alert-danger");
+            successAlert.setAttribute("role", "alert");
+            successAlert.setAttribute("id", "alert");
+            successAlert.innerHTML = string;
+            document.getElementById(idOfParentElement).insertBefore(successAlert, document.getElementById(idToInsertBefore))
+        }
+    }
+
+    function deleteAlert() {
+        if (document.getElementById("alert"))
+            document.getElementById("alert").remove()
+
+    }
+
+</script>
+<script>
+    insertAlertWarning({{ success }}, "This wsd already taken", "main-col");
+    insertAlertSuccess({{ success }}, "Order has been successfully created", "main-col");
+    setTimeout(function () {
+        deleteAlert();
+    }, 2000);
+</script>
+</body>
+</html>
